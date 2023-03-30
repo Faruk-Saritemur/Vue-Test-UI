@@ -51,13 +51,22 @@
             </v-row>
             <v-row>
               <v-col>
+                <div class="post-list">
+                  <h1>{{ title }}</h1>
+                  <ul>
+                    <li v-for="post in posts" :key="post.id">{{ post.title }}</li>
+                  </ul>
+                </div>
+              </v-col>
+              <v-col>
                 <DataGrid></DataGrid>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
                 <v-card>
-                  <v-autocomplete v-model="selectedItem" :items="autoItems" label="Test Items"></v-autocomplete>
+                  <v-autocomplete v-model="selectedItem" :items="autoItems" label="Test Items" item-title="name"
+                    item-value="id" @change="autoChange"></v-autocomplete>
                 </v-card>
               </v-col>
             </v-row>
@@ -84,6 +93,7 @@
 <script>
 import DataGrid from '../components/DataGrid.vue'
 import MenuList from '../components/MenuList.vue'
+import axios from "axios";
 
 export default {
   components: {
@@ -95,12 +105,17 @@ export default {
     items: ["Ürünlerimiz", "Kampanyalar", "Hakkımızda", "İletişim"],
     more: ["Görseller", "Destek", "Test7", "Test8"],
     text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    selectedItem: "",
+    selectedItem: null,
     autoItems: [],
-    tempObj: {}
+    title: "Axios Test Results",
+    posts: []
   }),
   mounted() {
-    this.fetchData()
+    this.fetchData(),
+    axios
+      .get("https://jsonplaceholder.typicode.com/posts")
+      .then(response => (this.posts = response.data))
+      .catch(error => console.log(error));
   },
   methods: {
     addItem(item) {
@@ -115,15 +130,15 @@ export default {
       fetch('https://jsonplaceholder.typicode.com/users')
         .then(response => response.json())
         .then(data => {
-          this.autoItems = data.map(item => ({
-            text: item.name,
-            value: item.id
-          }));
+          this.autoItems = data;
         })
         .catch(error => {
           console.error(error);
           alert('Veriler yüklenirken bir hata oluştu.');
         });
+    },
+    autoChange(selectedItem) {
+      console.log('Selected item:', selectedItem)
     }
   },
 };
@@ -132,5 +147,12 @@ export default {
 <style scoped>
 .image-v {
   margin-top: -10px;
+}
+.post-list {
+  max-height: 300px;
+  max-width: 500px;
+  margin-top: -100px;
+  padding-left: 50px;
+  font-size: large;
 }
 </style>

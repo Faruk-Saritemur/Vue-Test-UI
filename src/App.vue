@@ -1,14 +1,17 @@
 <template>
   <TestDashboard/>
+  <Login/>
 </template>
 
 <script>
 import TestDashboard from './components/TestDashboard.vue'
+import Login from './components/Login.vue'
 
 export default {
   name: 'App',
   components: {
-    TestDashboard
+    TestDashboard,
+    Login
   }
 }
 </script>
